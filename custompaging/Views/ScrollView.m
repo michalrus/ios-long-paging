@@ -14,6 +14,8 @@
 @property (nonatomic,strong) UIView* roll;
 
 @property (nonatomic) float touchPrevY;
+@property (nonatomic) float touchPrevDY;
+@property (nonatomic) double touchPrevTimestamp;
 
 @end
 
@@ -44,8 +46,11 @@
     [self.roll addSubview:page];
 }
 
-- (void) moveRollBy:(float)by {
+- (void) moveRollBy:(float)by velocity:(float)velocity {
     float y = self.roll.frame.origin.y + by;
+    
+    //if (velocity > 0)
+    //    NSLog(@"velocity = %f", velocity);
     
     y = MIN(y, 0);
     y = MAX(y, -(self.roll.bounds.size.height - self.bounds.size.height));
@@ -53,21 +58,52 @@
     self.roll.frame = CGRectMake(0, y, self.roll.bounds.size.width, self.roll.bounds.size.height);
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    CGPoint pos = [((UITouch*) [touches anyObject]) locationInView:self];
+- (void)handleTouch:(NSSet*)touches began:(BOOL)began ended:(BOOL)ended {
+    UITouch* touch = [touches anyObject];
+    CGPoint pos = [touch locationInView:self];
     
+    if (began) {
+        self.touchPrevDY = 0;
+    }
+    else {
+        float velocity;
+        float dy = pos.y - self.touchPrevY;
+        double dt = touch.timestamp - self.touchPrevTimestamp;
+    
+        if (!ended) { // if moved
+            NSLog(@"moved: dy = %f ; dt = %f", dy, dt);
+
+            velocity = 0;
+        }
+        else {
+            NSLog(@"ended: dy = %f ; dt = %f", dy, dt);
+            
+            velocity = self.touchPrevDY / dt;
+            
+            NSLog(@"velocity = %f", velocity);
+        }
+        [self moveRollBy:dy velocity:velocity];
+        
+        self.touchPrevDY = dy;
+    }
+    
+    self.touchPrevTimestamp = touch.timestamp;
     self.touchPrevY = pos.y;
+    
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self handleTouch:touches began:YES ended:NO];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {}
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {}
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self handleTouch:touches began:NO ended:YES];
+}
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    CGPoint pos = [((UITouch*) [touches anyObject]) locationInView:self];
-    
-    [self moveRollBy:pos.y - self.touchPrevY];
-    self.touchPrevY = pos.y;
+    [self handleTouch:touches began:NO ended:NO];
 }
 
 @end
