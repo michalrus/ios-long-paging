@@ -42,10 +42,19 @@
     return r;
 }
 
+float PageCreator_previousHue = -1;
+
 + (UIView*) pageWithWidth:(float)width height:(float)height {
     UIView* r = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     
-    float hue = [UIView rndFrom:0 to:1];
+    float hue;
+    
+    do {
+        hue = [UIView rndFrom:0 to:1];
+    } while (ABS(hue - PageCreator_previousHue) < 0.3);
+    
+    PageCreator_previousHue = hue;
+    
     UIColor* base = [UIColor colorWithHue:hue saturation:1 brightness:1 alpha:1];
     
     r.backgroundColor = base;
