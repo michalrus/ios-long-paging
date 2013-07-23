@@ -10,4 +10,6 @@
 
 @interface ScrollView : UIView
 
+- (void) addPage:(UIView*)page;
+
 @end

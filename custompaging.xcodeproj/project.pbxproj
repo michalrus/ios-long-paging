@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		66CE52B8179EB1B80016670B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE52B7179EB1B80016670B /* ViewController.m */; };
 		66CE52BF179EB2950016670B /* ScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE52BE179EB2950016670B /* ScrollView.m */; };
+		66CE52C9179EB93A0016670B /* UIView+PageCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE52C8179EB93A0016670B /* UIView+PageCreator.m */; };
 		66EC2377179EAF7900A98591 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC2376179EAF7900A98591 /* UIKit.framework */; };
 		66EC2379179EAF7900A98591 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC2378179EAF7900A98591 /* Foundation.framework */; };
 		66EC237B179EAF7900A98591 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC237A179EAF7900A98591 /* CoreGraphics.framework */; };
@@ -25,6 +26,8 @@
 		66CE52B7179EB1B80016670B /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		66CE52BD179EB2950016670B /* ScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScrollView.h; sourceTree = "<group>"; };
 		66CE52BE179EB2950016670B /* ScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrollView.m; sourceTree = "<group>"; };
+		66CE52C7179EB93A0016670B /* UIView+PageCreator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+PageCreator.h"; sourceTree = "<group>"; };
+		66CE52C8179EB93A0016670B /* UIView+PageCreator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+PageCreator.m"; sourceTree = "<group>"; };
 		66EC2373179EAF7900A98591 /* custompaging.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = custompaging.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EC2376179EAF7900A98591 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		66EC2378179EAF7900A98591 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -72,6 +75,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		66CE52C3179EB5140016670B /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				66CE52C7179EB93A0016670B /* UIView+PageCreator.h */,
+				66CE52C8179EB93A0016670B /* UIView+PageCreator.m */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		66EC236A179EAF7900A98591 = {
 			isa = PBXGroup;
 			children = (
@@ -102,6 +114,7 @@
 		66EC237C179EAF7900A98591 /* custompaging */ = {
 			isa = PBXGroup;
 			children = (
+				66CE52C3179EB5140016670B /* Helpers */,
 				66CE52BC179EB2950016670B /* Views */,
 				66CE52B5179EB1B80016670B /* Controllers */,
 				66EC2385179EAF7900A98591 /* AppDelegate.h */,
@@ -194,6 +207,7 @@
 				66EC2387179EAF7900A98591 /* AppDelegate.m in Sources */,
 				66CE52B8179EB1B80016670B /* ViewController.m in Sources */,
 				66CE52BF179EB2950016670B /* ScrollView.m in Sources */,
+				66CE52C9179EB93A0016670B /* UIView+PageCreator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

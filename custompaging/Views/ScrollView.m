@@ -10,12 +10,14 @@
 
 @implementation ScrollView
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
     }
     return self;
+}
+
+- (void) addPage:(UIView*)page {
 }
 
 @end

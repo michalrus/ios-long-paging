@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "ScrollView.h"
+#import "UIView+PageCreator.h"
 
 @interface ViewController ()
 
@@ -17,7 +19,18 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor blueColor];
+    
+    float w = self.view.bounds.size.width;
+    float h = self.view.bounds.size.height;
+    
+    ScrollView* scrollView = [[ScrollView alloc] initWithFrame:CGRectMake(0, 0, w, h)];
+    [self.view addSubview:scrollView];
+    
+    [scrollView addPage:[UIView pageWithWidth:w height:h]];
+    [scrollView addPage:[UIView pageWithWidth:w height:h]];
+    [scrollView addPage:[UIView pageWithWidth:w height:h]];
+    [scrollView addPage:[UIView pageWithWidth:w height:h*1.5]];
+    [scrollView addPage:[UIView pageWithWidth:w height:h]];
 }
 
 - (void)didReceiveMemoryWarning
