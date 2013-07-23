@@ -45,7 +45,11 @@
 float PageCreator_previousHue = -1;
 
 + (UIView*) pageWithWidth:(float)width height:(float)height {
-    UIView* r = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+    return [UIView pageWithFrame:CGRectMake(0, 0, width, height)];
+}
+
++ (UIView*) pageWithFrame:(CGRect)frame {
+    UIView* r = [[UIView alloc] initWithFrame:frame];
     
     float hue;
     
@@ -61,7 +65,7 @@ float PageCreator_previousHue = -1;
     
     r.clipsToBounds = YES;
     for (int i = 0; i < 50; i ++)
-        [r addSubview:[UIView rectangleWithHue:hue maxW:width maxH:height]];
+        [r addSubview:[UIView rectangleWithHue:hue maxW:frame.size.width maxH:frame.size.height]];
     
     return r;
 }

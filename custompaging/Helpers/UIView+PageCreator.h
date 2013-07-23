@@ -11,5 +11,6 @@
 @interface UIView (PageCreator)
 
 + (UIView*) pageWithWidth:(float)width height:(float)height;
++ (UIView*) pageWithFrame:(CGRect)frame;
 
 @end
