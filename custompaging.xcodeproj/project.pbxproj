@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		66CE52B8179EB1B80016670B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE52B7179EB1B80016670B /* ViewController.m */; };
+		66CE52BF179EB2950016670B /* ScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE52BE179EB2950016670B /* ScrollView.m */; };
 		66EC2377179EAF7900A98591 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC2376179EAF7900A98591 /* UIKit.framework */; };
 		66EC2379179EAF7900A98591 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC2378179EAF7900A98591 /* Foundation.framework */; };
 		66EC237B179EAF7900A98591 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC237A179EAF7900A98591 /* CoreGraphics.framework */; };
@@ -22,6 +23,8 @@
 /* Begin PBXFileReference section */
 		66CE52B6179EB1B80016670B /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		66CE52B7179EB1B80016670B /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		66CE52BD179EB2950016670B /* ScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScrollView.h; sourceTree = "<group>"; };
+		66CE52BE179EB2950016670B /* ScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrollView.m; sourceTree = "<group>"; };
 		66EC2373179EAF7900A98591 /* custompaging.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = custompaging.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EC2376179EAF7900A98591 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		66EC2378179EAF7900A98591 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -60,6 +63,15 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
+		66CE52BC179EB2950016670B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				66CE52BD179EB2950016670B /* ScrollView.h */,
+				66CE52BE179EB2950016670B /* ScrollView.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		66EC236A179EAF7900A98591 = {
 			isa = PBXGroup;
 			children = (
@@ -90,6 +102,7 @@
 		66EC237C179EAF7900A98591 /* custompaging */ = {
 			isa = PBXGroup;
 			children = (
+				66CE52BC179EB2950016670B /* Views */,
 				66CE52B5179EB1B80016670B /* Controllers */,
 				66EC2385179EAF7900A98591 /* AppDelegate.h */,
 				66EC2386179EAF7900A98591 /* AppDelegate.m */,
@@ -180,6 +193,7 @@
 				66EC2383179EAF7900A98591 /* main.m in Sources */,
 				66EC2387179EAF7900A98591 /* AppDelegate.m in Sources */,
 				66CE52B8179EB1B80016670B /* ViewController.m in Sources */,
+				66CE52BF179EB2950016670B /* ScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
