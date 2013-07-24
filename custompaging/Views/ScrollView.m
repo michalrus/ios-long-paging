@@ -57,35 +57,70 @@
     self.roll.layer.position = CGPointMake(0, 0);
 }
 
-- (void) moveRollBy:(float)dy animated:(BOOL)animated touchEnded:(BOOL)ended {
-    CALayer* l = self.roll.layer;
+- (int )pageIdxAtY:(float)y {
+    float epsilon = 0.25;
+    
+    float tmpY = y + self.bounds.size.height / 2 + epsilon;
+    int currentPageIdx = -2;
+    BOOL found = NO;
+    
+    for (UIView* page in self.pages) {
+        currentPageIdx++;
+        
+        if (tmpY < page.frame.origin.y) {
+            found = YES;
+            break;
+        }
+    }
+    
+    if (!found)
+        currentPageIdx++;
+    
+    return MIN(self.pages.count - 1, MAX(0, currentPageIdx));
+}
 
+- (void) moveRollBy:(float)dy animated:(BOOL)animated touchEnded:(BOOL)touchEnded {
+    CALayer* l = self.roll.layer;
+    
     // keep current (possibly animated) position of our presentation layer
     l.position = ((CALayer *)[l presentationLayer]).position;
     [l removeAllAnimations];
     
+    float animDuration = 1.5;
+    
     float x = l.position.x;
     float y = l.position.y + dy;
     
-    y = MIN(y, 0);
-    y = MAX(y, -(self.roll.bounds.size.height - self.bounds.size.height));
-    
-    if (self.pagingEnabled) {
-        float tmpY = -l.position.y + self.bounds.size.height / 2 + 0.25;
-        int currentPage = -2;
-        BOOL found = NO;
-        for (UIView* page in self.pages) {
-            currentPage++;
-            
-            if (tmpY < page.frame.origin.y) {
-                found = YES;
-                break;
-            }
-        }
-        if (!found)
-            currentPage++;
+    if (!self.pagingEnabled) {
+        y = MIN(y, 0);
+        y = MAX(y, -(self.roll.bounds.size.height - self.bounds.size.height));
+    }
+    else {
+        int currentPageIdx = [self pageIdxAtY:-l.position.y];
+        int targetPageIdx = [self pageIdxAtY:-y];
         
-        BOOL biggerPage = ((UIView* )[self.pages objectAtIndex:currentPage]).frame.size.height > self.frame.size.height;
+        UIView* currentPage = [self.pages objectAtIndex:currentPageIdx];
+        
+        if (targetPageIdx > currentPageIdx)
+            targetPageIdx = currentPageIdx + 1;
+        else if (targetPageIdx < currentPageIdx)
+            targetPageIdx = currentPageIdx - 1;
+        UIView* targetPage = [self.pages objectAtIndex:targetPageIdx];
+        
+        BOOL biggerPage = currentPage.frame.size.height > self.frame.size.height;
+        
+        if (biggerPage) {
+            //BOOL atTopEdge = ABS(y + currentPage)
+            
+            NSLog(@"current page y = %.f", -currentPage.frame.origin.y);
+            NSLog(@"move to y = %.0f", y);
+        }
+
+        if (touchEnded) {
+            animated = YES;
+            animDuration = 0.25;
+            y = -targetPage.frame.origin.y;
+        }
     }
     
     if (!animated) {
@@ -99,7 +134,7 @@
         CGPathAddLineToPoint(path, NULL, x, y);
         
         anim.path = path;
-        anim.duration = 1.5;
+        anim.duration = animDuration;
         anim.timingFunctions = @[[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
         
         anim.fillMode = kCAFillModeForwards;
@@ -130,6 +165,11 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [self moveRollBy:0 animated:NO touchEnded:NO];
     [super touchesBegan:touches withEvent:event];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self moveRollBy:0 animated:NO touchEnded:YES];
+    [super touchesEnded:touches withEvent:event];
 }
 
 #pragma mark - UIGestureRecognizerDelegate
