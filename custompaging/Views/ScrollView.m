@@ -8,14 +8,14 @@
 
 #import "ScrollView.h"
 
+#import <QuartzCore/QuartzCore.h>
+
 @interface ScrollView ()
 
 @property (nonatomic,strong) NSMutableArray* pages;
 @property (nonatomic,strong) UIView* roll;
 
-@property (nonatomic) float touchPrevY;
-@property (nonatomic) float touchPrevDY;
-@property (nonatomic) double touchPrevTimestamp;
+@property (nonatomic,strong) NSDate* panPrevDate;
 
 @end
 
@@ -31,6 +31,8 @@
         
         UIPanGestureRecognizer* gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
         gestureRecognizer.delegate = self;
+        gestureRecognizer.maximumNumberOfTouches = 1;
+        gestureRecognizer.minimumNumberOfTouches = 1;
         
         [self addGestureRecognizer:gestureRecognizer];
     }
@@ -49,63 +51,39 @@
     page.frame = CGRectMake(0, rollH, w, h);
     self.roll.frame = CGRectMake(0, 0, rollW, rollH + h);
     [self.roll addSubview:page];
+    self.roll.layer.anchorPoint = CGPointMake(0, 0);
+    self.roll.layer.position = CGPointMake(0, 0);
 }
 
-- (void) moveRollBy:(float)by velocity:(float)velocity {
-    float y = self.roll.frame.origin.y + by;
+- (void) moveRollBy:(float)dy animated:(BOOL)animated {
+    CALayer* l = self.roll.layer;
     
-    //if (velocity > 0)
-    //    NSLog(@"velocity = %f", velocity);
+    float y = l.position.y + dy;
     
     y = MIN(y, 0);
     y = MAX(y, -(self.roll.bounds.size.height - self.bounds.size.height));
     
-    self.roll.frame = CGRectMake(0, y, self.roll.bounds.size.width, self.roll.bounds.size.height);
+    NSLog(@"y = %.0f", y);
+    
+    l.position = CGPointMake(l.position.x, y);
 }
 
 - (void)handlePan:(UIPanGestureRecognizer*)gestureRecognizer {
-    //if ([gestureRecognizer state] == UIGestureRecognizerStateBegan || [gestureRecognizer state] == UIGestureRecognizerStateChanged) {
-        CGPoint translation = [gestureRecognizer translationInView:self];
-        
-        NSLog(@"dy = %f ; velocity = %f", translation.y, [gestureRecognizer velocityInView:self].y);
-        
-        // reset the gesture recognizer's translation to {0, 0} after applying so the next callback is a delta from the current position
-        [gestureRecognizer setTranslation:CGPointZero inView:self];
-    //}
-}
-
-- (void)handleTouch:(NSSet*)touches began:(BOOL)began ended:(BOOL)ended {
-    UITouch* touch = [touches anyObject];
-    CGPoint pos = [touch locationInView:self];
+    NSLog(@"pan!");
     
-    if (began) {
-        self.touchPrevDY = 0;
-    }
-    else {
-        float velocity;
-        float dy = pos.y - self.touchPrevY;
-        double dt = touch.timestamp - self.touchPrevTimestamp;
+    float dy = [gestureRecognizer translationInView:self].y;
+    float dt = -[self.panPrevDate timeIntervalSinceNow];
+    self.panPrevDate = [NSDate date];
     
-        if (!ended) { // if moved
-            NSLog(@"moved: dy = %f ; dt = %f", dy, dt);
-
-            velocity = 0;
-        }
-        else {
-            NSLog(@"ended: dy = %f ; dt = %f", dy, dt);
-            
-            velocity = self.touchPrevDY / dt;
-            
-            NSLog(@"velocity = %f", velocity);
-        }
-        [self moveRollBy:dy velocity:velocity];
-        
-        self.touchPrevDY = dy;
+    [self moveRollBy:dy animated:NO];
+    
+    if (gestureRecognizer.state == UIGestureRecognizerStateEnded && dt < 0.2) {
+        float velocity = [gestureRecognizer velocityInView:self].y;
+        [self moveRollBy:velocity * 0.5 animated:YES];
     }
     
-    self.touchPrevTimestamp = touch.timestamp;
-    self.touchPrevY = pos.y;
-    
+    // reset the gesture recognizer's translation to {0, 0} after applying so the next callback is a delta from the current position
+    [gestureRecognizer setTranslation:CGPointZero inView:self];
 }
 
 #pragma mark - UIGestureRecognizerDelegate
