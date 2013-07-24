@@ -98,11 +98,16 @@
     
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded && dt < 0.2) {
         float velocity = [gestureRecognizer velocityInView:self].y;
-        [self moveRollBy:velocity * 0.5 animated:YES];
+        [self moveRollBy:velocity * 2./3 animated:YES];
     }
     
     // reset the gesture recognizer's translation to {0, 0} after applying so the next callback is a delta from the current position
     [gestureRecognizer setTranslation:CGPointZero inView:self];
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self moveRollBy:0 animated:NO];
+    [super touchesBegan:touches withEvent:event];
 }
 
 #pragma mark - UIGestureRecognizerDelegate
