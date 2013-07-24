@@ -23,25 +23,6 @@
     return r;
 }
 
-+ (UIView*) rectangleWithHue:(float)hue maxW:(float)maxW maxH:(float)maxH {
-    int a = [UIView rndFrom:0.2 to:0.5] * maxW;
-    int x = [UIView rndFrom:-0.3 to:1.3] * maxW;
-    int y = [UIView rndFrom:-0.3 to:1.3] * maxH;
-    
-    int mod = 15;
-    a -= a % mod;
-    x -= x % mod;
-    y -= y % mod;
-    
-    UIView* r = [[UIView alloc] initWithFrame:CGRectMake(x, y, a, a)];
-    
-    float alph = [UIView rndFrom:0.25 to:0.75];
-    float hueMod = [UIView rndFrom:-1 to:1] * 0.2;
-    r.backgroundColor = [UIColor colorWithHue:hue + hueMod saturation:1 brightness:1 alpha:alph];
-    
-    return r;
-}
-
 float PageCreator_previousHue = -1;
 
 + (UIView*) pageWithWidth:(float)width height:(float)height {
@@ -55,17 +36,24 @@ float PageCreator_previousHue = -1;
     
     do {
         hue = [UIView rndFrom:0 to:1];
-    } while (ABS(hue - PageCreator_previousHue) < 0.3);
+    } while (ABS(hue - PageCreator_previousHue) < 0.2);
     
     PageCreator_previousHue = hue;
     
-    UIColor* base = [UIColor colorWithHue:hue saturation:1 brightness:1 alpha:1];
+    UIColor* stripeC = [UIColor colorWithHue:hue saturation:1 brightness:1 alpha:1];
+    UIColor* spacerC = [UIColor colorWithHue:hue saturation:0.5 brightness:1 alpha:1];
     
-    r.backgroundColor = base;
+    r.backgroundColor = spacerC;
     
     r.clipsToBounds = YES;
-    for (int i = 0; i < 50; i ++)
-        [r addSubview:[UIView rectangleWithHue:hue maxW:frame.size.width maxH:frame.size.height]];
+    float stripeH = 20;
+    float spacerH = stripeH;
+    for (float y = 0; y < frame.size.height; y += stripeH + spacerH) {
+        UIView* stripe = [[UIView alloc] initWithFrame:CGRectMake(0, y, frame.size.width, stripeH)];
+        stripe.backgroundColor = stripeC;
+        
+        [r addSubview:stripe];
+    }
     
     return r;
 }
