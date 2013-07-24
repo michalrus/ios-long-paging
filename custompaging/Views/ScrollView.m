@@ -57,20 +57,39 @@
 
 - (void) moveRollBy:(float)dy animated:(BOOL)animated {
     CALayer* l = self.roll.layer;
+
+    // keep current (possibly animated) position of our presentation layer
+    l.position = ((CALayer *)[l presentationLayer]).position;
+    [l removeAllAnimations];
     
+    float x = l.position.x;
     float y = l.position.y + dy;
     
     y = MIN(y, 0);
     y = MAX(y, -(self.roll.bounds.size.height - self.bounds.size.height));
     
-    NSLog(@"y = %.0f", y);
-    
-    l.position = CGPointMake(l.position.x, y);
+    if (!animated) {
+        l.position = CGPointMake(x, y);
+    }
+    else {
+        CAKeyframeAnimation* anim = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+        
+        CGMutablePathRef path = CGPathCreateMutable();
+        CGPathMoveToPoint(path, NULL, l.position.x, l.position.y);
+        CGPathAddLineToPoint(path, NULL, x, y);
+        
+        anim.path = path;
+        anim.duration = 1.5;
+        anim.timingFunctions = @[[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
+        
+        anim.fillMode = kCAFillModeForwards;
+        anim.removedOnCompletion = NO;
+        
+        [l addAnimation:anim forKey:@"position"];
+    }
 }
 
 - (void)handlePan:(UIPanGestureRecognizer*)gestureRecognizer {
-    NSLog(@"pan!");
-    
     float dy = [gestureRecognizer translationInView:self].y;
     float dt = -[self.panPrevDate timeIntervalSinceNow];
     self.panPrevDate = [NSDate date];
