@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		66B1737A179FD99D00C58200 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66B17379179FD99D00C58200 /* QuartzCore.framework */; };
 		66CE52B8179EB1B80016670B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE52B7179EB1B80016670B /* ViewController.m */; };
 		66CE52BF179EB2950016670B /* ScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE52BE179EB2950016670B /* ScrollView.m */; };
 		66CE52C9179EB93A0016670B /* UIView+PageCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE52C8179EB93A0016670B /* UIView+PageCreator.m */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		66B17379179FD99D00C58200 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		66CE52B6179EB1B80016670B /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		66CE52B7179EB1B80016670B /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		66CE52BD179EB2950016670B /* ScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScrollView.h; sourceTree = "<group>"; };
@@ -48,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66B1737A179FD99D00C58200 /* QuartzCore.framework in Frameworks */,
 				66EC2377179EAF7900A98591 /* UIKit.framework in Frameworks */,
 				66EC2379179EAF7900A98591 /* Foundation.framework in Frameworks */,
 				66EC237B179EAF7900A98591 /* CoreGraphics.framework in Frameworks */,
@@ -104,6 +107,7 @@
 		66EC2375179EAF7900A98591 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				66B17379179FD99D00C58200 /* QuartzCore.framework */,
 				66EC2376179EAF7900A98591 /* UIKit.framework */,
 				66EC2378179EAF7900A98591 /* Foundation.framework */,
 				66EC237A179EAF7900A98591 /* CoreGraphics.framework */,
