@@ -17,8 +17,6 @@
 
 @property (nonatomic,strong) NSDate* panPrevDate;
 
-@property (nonatomic) int currentPage;
-
 @end
 
 @implementation ScrollView
@@ -26,7 +24,6 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.currentPage = -1;
         self.pagingEnabled = NO;
         
         self.pages = [[NSMutableArray alloc] init];
@@ -74,7 +71,21 @@
     y = MAX(y, -(self.roll.bounds.size.height - self.bounds.size.height));
     
     if (self.pagingEnabled) {
-        NSLog(@"move to %.0f", y);
+        float tmpY = -l.position.y + self.bounds.size.height / 2 + 0.25;
+        int currentPage = -2;
+        BOOL found = NO;
+        for (UIView* page in self.pages) {
+            currentPage++;
+            
+            if (tmpY < page.frame.origin.y) {
+                found = YES;
+                break;
+            }
+        }
+        if (!found)
+            currentPage++;
+        
+        BOOL biggerPage = ((UIView* )[self.pages objectAtIndex:currentPage]).frame.size.height > self.frame.size.height;
     }
     
     if (!animated) {
