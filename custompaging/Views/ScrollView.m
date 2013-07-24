@@ -17,6 +17,8 @@
 
 @property (nonatomic,strong) NSDate* panPrevDate;
 
+@property (nonatomic) int currentPage;
+
 @end
 
 @implementation ScrollView
@@ -24,6 +26,9 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        self.currentPage = -1;
+        self.pagingEnabled = NO;
+        
         self.pages = [[NSMutableArray alloc] init];
         self.roll = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 0)];
         self.roll.backgroundColor = [UIColor blueColor];
@@ -55,7 +60,7 @@
     self.roll.layer.position = CGPointMake(0, 0);
 }
 
-- (void) moveRollBy:(float)dy animated:(BOOL)animated {
+- (void) moveRollBy:(float)dy animated:(BOOL)animated touchEnded:(BOOL)ended {
     CALayer* l = self.roll.layer;
 
     // keep current (possibly animated) position of our presentation layer
@@ -67,6 +72,10 @@
     
     y = MIN(y, 0);
     y = MAX(y, -(self.roll.bounds.size.height - self.bounds.size.height));
+    
+    if (self.pagingEnabled) {
+        NSLog(@"move to %.0f", y);
+    }
     
     if (!animated) {
         l.position = CGPointMake(x, y);
@@ -94,19 +103,21 @@
     float dt = -[self.panPrevDate timeIntervalSinceNow];
     self.panPrevDate = [NSDate date];
     
-    [self moveRollBy:dy animated:NO];
+    BOOL ended = gestureRecognizer.state == UIGestureRecognizerStateEnded;
     
-    if (gestureRecognizer.state == UIGestureRecognizerStateEnded && dt < 0.2) {
+    if (ended && dt < 0.2) {
         float velocity = [gestureRecognizer velocityInView:self].y;
-        [self moveRollBy:velocity * 2./3 animated:YES];
+        [self moveRollBy:velocity * 2./3 animated:YES touchEnded:ended];
     }
+    else
+        [self moveRollBy:dy animated:NO touchEnded:ended];
     
     // reset the gesture recognizer's translation to {0, 0} after applying so the next callback is a delta from the current position
     [gestureRecognizer setTranslation:CGPointZero inView:self];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self moveRollBy:0 animated:NO];
+    [self moveRollBy:0 animated:NO touchEnded:NO];
     [super touchesBegan:touches withEvent:event];
 }
 

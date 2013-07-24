@@ -10,6 +10,8 @@
 
 @interface ScrollView : UIView <UIGestureRecognizerDelegate>
 
+@property (nonatomic) BOOL pagingEnabled;
+
 - (void) addPage:(UIView*)page;
 
 @end

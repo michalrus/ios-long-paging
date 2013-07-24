@@ -33,6 +33,7 @@
     [scrollView addPage:[UIView pageWithWidth:w height:h]];
     [scrollView addPage:[UIView pageWithWidth:w height:h*1.5]];
     [scrollView addPage:[UIView pageWithWidth:w height:h]];
+    scrollView.pagingEnabled = YES;
     
     // UIScrollView
     
