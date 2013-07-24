@@ -17,6 +17,9 @@
 
 @property (nonatomic,strong) NSDate* panPrevDate;
 
+@property (nonatomic) int beginPageIdx;
+@property (nonatomic) float beginY;
+
 @end
 
 @implementation ScrollView
@@ -57,9 +60,9 @@
     self.roll.layer.position = CGPointMake(0, 0);
 }
 
+#define epsilon 0.25
+
 - (int )pageIdxAtY:(float)y {
-    float epsilon = 0.25;
-    
     float tmpY = y + self.bounds.size.height / 2 + epsilon;
     int currentPageIdx = -2;
     BOOL found = NO;
@@ -79,7 +82,7 @@
     return MIN(self.pages.count - 1, MAX(0, currentPageIdx));
 }
 
-- (void) moveRollBy:(float)dy animated:(BOOL)animated touchEnded:(BOOL)touchEnded {
+- (void) moveRollBy:(float)dy animated:(BOOL)animated touchBegan:(BOOL)touchBegan touchEnded:(BOOL)touchEnded {
     CALayer* l = self.roll.layer;
     
     // keep current (possibly animated) position of our presentation layer
@@ -99,6 +102,11 @@
         int currentPageIdx = [self pageIdxAtY:-l.position.y];
         int targetPageIdx = [self pageIdxAtY:-y];
         
+        if (touchBegan) {
+            self.beginPageIdx = currentPageIdx;
+            self.beginY = l.position.y;
+        }
+        
         UIView* currentPage = [self.pages objectAtIndex:currentPageIdx];
         
         if (targetPageIdx > currentPageIdx)
@@ -107,19 +115,64 @@
             targetPageIdx = currentPageIdx - 1;
         UIView* targetPage = [self.pages objectAtIndex:targetPageIdx];
         
-        BOOL biggerPage = currentPage.frame.size.height > self.frame.size.height;
+        BOOL currentPageIsBigger = currentPage.frame.size.height - epsilon > self.frame.size.height;
         
-        if (biggerPage) {
-            //BOOL atTopEdge = ABS(y + currentPage)
+        if (currentPageIsBigger) {
+            //BOOL atTopEdge = ABS(l.position.y - -currentPage.frame.origin.y) < epsilon;
             
-            NSLog(@"current page y = %.f", -currentPage.frame.origin.y);
-            NSLog(@"move to y = %.0f", y);
+            NSLog(@"current page y    = %.f", -currentPage.frame.origin.y);
+            NSLog(@"current page maxy = %.f", -currentPage.frame.origin.y - currentPage.frame.size.height + self.frame.size.height);
+            NSLog(@"current loca y = %.f", l.position.y);
+            //NSLog(@"atTopEdge = %d", atTopEdge);
+            //NSLog(@"move to y = %.0f", y);
+            
+            
         }
-
+        
+#define maxY(page) (-page.frame.origin.y)
+#define minY(page) (-page.frame.origin.y - page.frame.size.height + self.frame.size.height)
+        
         if (touchEnded) {
-            animated = YES;
-            animDuration = 0.25;
-            y = -targetPage.frame.origin.y;
+            float newY = y;
+            
+            if (currentPageIsBigger && targetPageIdx == currentPageIdx) {
+                newY = MIN(newY, maxY(currentPage));
+                newY = MAX(newY, minY(currentPage));
+                
+            }
+            else {
+                newY = -targetPage.frame.origin.y;
+                
+                if (currentPageIsBigger && self.beginPageIdx == currentPageIdx && targetPageIdx != currentPageIdx) {
+                    
+                    NSLog(@"beginY = %.0f", self.beginY);
+                    
+                    BOOL beganAtTopEdge = ABS(self.beginY - maxY(currentPage)) < epsilon;
+                    BOOL beganAtBottomEdge = ABS(self.beginY - minY(currentPage)) < epsilon;
+                    
+                    if (targetPageIdx < currentPageIdx && !beganAtTopEdge)
+                        newY = maxY(currentPage);
+                    else if (targetPageIdx > currentPageIdx && !beganAtBottomEdge)
+                        newY = minY(currentPage);
+                }
+                
+                if (newY == -targetPage.frame.origin.y) {
+                    // if we're still changing the page
+                    BOOL targetPageIsBigger = targetPage.frame.size.height - epsilon > self.frame.size.height;
+
+                    if (targetPageIsBigger) {
+                        if (targetPageIdx < currentPageIdx) { // move up?
+                            newY = minY(targetPage);
+                        }
+                    }
+                }
+            }
+            
+            if (newY != y) {
+                y = newY;
+                animated = YES;
+                animDuration = 0.25;
+            }
         }
     }
     
@@ -149,26 +202,27 @@
     float dt = -[self.panPrevDate timeIntervalSinceNow];
     self.panPrevDate = [NSDate date];
     
+    BOOL began = gestureRecognizer.state == UIGestureRecognizerStateBegan;
     BOOL ended = gestureRecognizer.state == UIGestureRecognizerStateEnded;
     
     if (ended && dt < 0.2) {
         float velocity = [gestureRecognizer velocityInView:self].y;
-        [self moveRollBy:velocity * 2./3 animated:YES touchEnded:ended];
+        [self moveRollBy:velocity * 2./3 animated:YES touchBegan:began touchEnded:ended];
     }
     else
-        [self moveRollBy:dy animated:NO touchEnded:ended];
+        [self moveRollBy:dy animated:NO touchBegan:began touchEnded:ended];
     
     // reset the gesture recognizer's translation to {0, 0} after applying so the next callback is a delta from the current position
     [gestureRecognizer setTranslation:CGPointZero inView:self];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self moveRollBy:0 animated:NO touchEnded:NO];
+    [self moveRollBy:0 animated:NO touchBegan:YES touchEnded:NO];
     [super touchesBegan:touches withEvent:event];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self moveRollBy:0 animated:NO touchEnded:YES];
+    [self moveRollBy:0 animated:NO touchBegan:NO touchEnded:YES];
     [super touchesEnded:touches withEvent:event];
 }
 
