@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ScrollView : UIView
+@interface ScrollView : UIView <UIGestureRecognizerDelegate>
 
 - (void) addPage:(UIView*)page;
 

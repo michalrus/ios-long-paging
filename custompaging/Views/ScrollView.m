@@ -28,6 +28,11 @@
         self.roll = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 0)];
         self.roll.backgroundColor = [UIColor blueColor];
         [self addSubview:self.roll];
+        
+        UIPanGestureRecognizer* gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+        gestureRecognizer.delegate = self;
+        
+        [self addGestureRecognizer:gestureRecognizer];
     }
     return self;
 }
@@ -56,6 +61,17 @@
     y = MAX(y, -(self.roll.bounds.size.height - self.bounds.size.height));
     
     self.roll.frame = CGRectMake(0, y, self.roll.bounds.size.width, self.roll.bounds.size.height);
+}
+
+- (void)handlePan:(UIPanGestureRecognizer*)gestureRecognizer {
+    //if ([gestureRecognizer state] == UIGestureRecognizerStateBegan || [gestureRecognizer state] == UIGestureRecognizerStateChanged) {
+        CGPoint translation = [gestureRecognizer translationInView:self];
+        
+        NSLog(@"dy = %f ; velocity = %f", translation.y, [gestureRecognizer velocityInView:self].y);
+        
+        // reset the gesture recognizer's translation to {0, 0} after applying so the next callback is a delta from the current position
+        [gestureRecognizer setTranslation:CGPointZero inView:self];
+    //}
 }
 
 - (void)handleTouch:(NSSet*)touches began:(BOOL)began ended:(BOOL)ended {
@@ -92,18 +108,10 @@
     
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self handleTouch:touches began:YES ended:NO];
-}
+#pragma mark - UIGestureRecognizerDelegate
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self handleTouch:touches began:NO ended:YES];
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self handleTouch:touches began:NO ended:NO];
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
 }
 
 @end
