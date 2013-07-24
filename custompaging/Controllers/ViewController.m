@@ -43,10 +43,13 @@
     [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
     [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
     [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
-    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h * 1.5)]]; y += h * 1.5;
+    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
+    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
+    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
+    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
     [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
     [uiScrollView setContentSize:CGSizeMake(w, y)];
-//    uiScrollView.pagingEnabled = YES;
+    uiScrollView.pagingEnabled = YES;
 }
 
 - (void)didReceiveMemoryWarning
