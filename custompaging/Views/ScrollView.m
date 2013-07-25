@@ -94,6 +94,11 @@
     float x = l.position.x;
     float y = l.position.y + dy;
     
+    // linear "rubber band"
+    if (y > 0 || y < -(self.roll.bounds.size.height - self.bounds.size.height)) {
+        y = l.position.y + dy / 2.5;
+    }
+    
     BOOL bounce = NO;
     
     if (!self.pagingEnabled) {
