@@ -94,6 +94,8 @@
     float x = l.position.x;
     float y = l.position.y + dy;
     
+    BOOL bounce = NO;
+    
     if (!self.pagingEnabled) {
         y = MIN(y, 0);
         y = MAX(y, -(self.roll.bounds.size.height - self.bounds.size.height));
@@ -136,10 +138,14 @@
                     BOOL beganAtTopEdge = ABS(self.beginY - maxY(currentPage)) < epsilon;
                     BOOL beganAtBottomEdge = ABS(self.beginY - minY(currentPage)) < epsilon;
                     
-                    if (targetPageIdx < currentPageIdx && !beganAtTopEdge)
+                    if (targetPageIdx < currentPageIdx && !beganAtTopEdge) {
                         newY = maxY(currentPage);
-                    else if (targetPageIdx > currentPageIdx && !beganAtBottomEdge)
+                        bounce = YES;
+                    }
+                    else if (targetPageIdx > currentPageIdx && !beganAtBottomEdge) {
+                        bounce = YES;
                         newY = minY(currentPage);
+                    }
                 }
                 
                 if (newY == -targetPage.frame.origin.y) {
@@ -170,16 +176,23 @@
         
         CGMutablePathRef path = CGPathCreateMutable();
         CGPathMoveToPoint(path, NULL, l.position.x, l.position.y);
+        if (bounce) {
+            float by = 20;
+            CGPathAddLineToPoint(path, NULL, x, y + (l.position.y > y ? -by : by));
+        }
         CGPathAddLineToPoint(path, NULL, x, y);
         
         anim.path = path;
-        anim.duration = animDuration;
-        anim.timingFunctions = @[[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
+        anim.duration = (bounce ? 2 : 1) * animDuration;
+        CAMediaTimingFunction* t = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+        anim.timingFunctions = @[t, t];
         
         anim.fillMode = kCAFillModeForwards;
         anim.removedOnCompletion = NO;
         
         [l addAnimation:anim forKey:@"position"];
+        
+        NSLog(@"beginning animation with bounce = %d", bounce);
     }
 }
 
