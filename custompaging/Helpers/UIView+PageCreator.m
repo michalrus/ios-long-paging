@@ -7,6 +7,7 @@
 //
 
 #import "UIView+PageCreator.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation UIView (PageCreator)
 
@@ -31,6 +32,7 @@ float PageCreator_previousHue = -1;
 
 + (UIView*) pageWithFrame:(CGRect)frame {
     UIView* r = [[UIView alloc] initWithFrame:frame];
+    r.clipsToBounds = YES;
     
     float hue;
     
@@ -40,19 +42,19 @@ float PageCreator_previousHue = -1;
     
     PageCreator_previousHue = hue;
     
-    UIColor* stripeC = [UIColor colorWithHue:hue saturation:1 brightness:1 alpha:1];
-    UIColor* spacerC = [UIColor colorWithHue:hue saturation:0.5 brightness:1 alpha:1];
+    r.backgroundColor = [UIColor colorWithHue:hue saturation:1 brightness:1 alpha:1];
     
-    r.backgroundColor = spacerC;
-    
-    r.clipsToBounds = YES;
-    float stripeH = 20;
-    float spacerH = stripeH;
-    for (float y = 0; y < frame.size.height; y += stripeH + spacerH) {
-        UIView* stripe = [[UIView alloc] initWithFrame:CGRectMake(0, y, frame.size.width, stripeH)];
-        stripe.backgroundColor = stripeC;
-        
-        [r addSubview:stripe];
+    for (int i = 0; i < 30; i++) {
+        float w = [UIView rndFrom:10 to:frame.size.width];
+        float h = w;//[UIView rndFrom:10 to:frame.size.height];
+        float x = [UIView rndFrom:0 to:frame.size.width];
+        float y = [UIView rndFrom:0 to:frame.size.height];
+        float sat = [UIView rndFrom:0.5 to:1];
+        float bri = [UIView rndFrom:0.5 to:1];
+        UIView* rect = [[UIView alloc] initWithFrame:CGRectMake(x, y, w, h)];
+        rect.backgroundColor = [UIColor colorWithHue:hue saturation:sat brightness:bri alpha:1.0]; //[[UIColor whiteColor] colorWithAlphaComponent:0.2];
+        rect.layer.cornerRadius = w;
+        [r addSubview:rect];
     }
     
     return r;
