@@ -117,18 +117,6 @@
         
         BOOL currentPageIsBigger = currentPage.frame.size.height - epsilon > self.frame.size.height;
         
-        if (currentPageIsBigger) {
-            //BOOL atTopEdge = ABS(l.position.y - -currentPage.frame.origin.y) < epsilon;
-            
-            NSLog(@"current page y    = %.f", -currentPage.frame.origin.y);
-            NSLog(@"current page maxy = %.f", -currentPage.frame.origin.y - currentPage.frame.size.height + self.frame.size.height);
-            NSLog(@"current loca y = %.f", l.position.y);
-            //NSLog(@"atTopEdge = %d", atTopEdge);
-            //NSLog(@"move to y = %.0f", y);
-            
-            
-        }
-        
 #define maxY(page) (-page.frame.origin.y)
 #define minY(page) (-page.frame.origin.y - page.frame.size.height + self.frame.size.height)
         
@@ -144,8 +132,6 @@
                 newY = -targetPage.frame.origin.y;
                 
                 if (currentPageIsBigger && self.beginPageIdx == currentPageIdx && targetPageIdx != currentPageIdx) {
-                    
-                    NSLog(@"beginY = %.0f", self.beginY);
                     
                     BOOL beganAtTopEdge = ABS(self.beginY - maxY(currentPage)) < epsilon;
                     BOOL beganAtBottomEdge = ABS(self.beginY - minY(currentPage)) < epsilon;
