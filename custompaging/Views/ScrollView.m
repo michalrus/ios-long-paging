@@ -123,14 +123,9 @@
 #define minY(page) (-page.frame.origin.y - page.frame.size.height + self.frame.size.height)
         
         if (touchEnded) {
-            NSLog(@"; current = %d (y = %.0f)", currentPageIdx, l.position.y);
-            NSLog(@"; target  = %d (y = %.0f)", targetPageIdx, y);
-            
             float newY = y;
             
             if (currentPageIsBigger && targetPageIdx == currentPageIdx) {
-                NSLog(@"---> current is bigger && target == current");
-                
                 newY = MIN(newY, maxY(currentPage));
                 newY = MAX(newY, minY(currentPage));
                 
@@ -141,8 +136,6 @@
                 newY = -targetPage.frame.origin.y;
                 
                 if (currentPageIsBigger && self.beginPageIdx == currentPageIdx && targetPageIdx != currentPageIdx) {
-                    
-                    NSLog(@"current == begin == bigger && target != current");
                     
                     BOOL beganAtTopEdge = ABS(self.beginY - maxY(currentPage)) < epsilon;
                     BOOL beganAtBottomEdge = ABS(self.beginY - minY(currentPage)) < epsilon;
@@ -200,8 +193,6 @@
         anim.removedOnCompletion = NO;
         
         [l addAnimation:anim forKey:@"position"];
-        
-        NSLog(@"beginning animation with bounce = %d", bounce);
     }
 }
 
