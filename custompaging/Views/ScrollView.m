@@ -100,6 +100,7 @@
     }
     
     BOOL bounce = NO;
+    float bounceBy = 20;
     
     if (!self.pagingEnabled) {
         y = MIN(y, 0);
@@ -142,8 +143,8 @@
                 
                 if (currentPageIsBigger && self.beginPageIdx == currentPageIdx && targetPageIdx != currentPageIdx) {
                     
-                    BOOL beganAtTopEdge = ABS(self.beginY - maxY(currentPage)) < epsilon;
-                    BOOL beganAtBottomEdge = ABS(self.beginY - minY(currentPage)) < epsilon;
+                    BOOL beganAtTopEdge = ABS(self.beginY - maxY(currentPage)) < bounceBy;
+                    BOOL beganAtBottomEdge = ABS(self.beginY - minY(currentPage)) < bounceBy;
                     
                     if (targetPageIdx < currentPageIdx && !beganAtTopEdge) {
                         newY = maxY(currentPage);
@@ -184,8 +185,7 @@
         CGMutablePathRef path = CGPathCreateMutable();
         CGPathMoveToPoint(path, NULL, l.position.x, l.position.y);
         if (bounce) {
-            float by = 20;
-            CGPathAddLineToPoint(path, NULL, x, y + (l.position.y > y ? -by : by));
+            CGPathAddLineToPoint(path, NULL, x, y + (l.position.y > y ? -1 : 1) * bounceBy);
         }
         CGPathAddLineToPoint(path, NULL, x, y);
         
