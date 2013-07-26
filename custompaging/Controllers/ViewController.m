@@ -28,11 +28,9 @@
     ScrollView* scrollView = [[ScrollView alloc] initWithFrame:CGRectMake(0, 0, w, h)];
     [self.view addSubview:scrollView];
     
-    [scrollView addPage:[UIView pageWithWidth:w height:h]];
-    [scrollView addPage:[UIView pageWithWidth:w height:h]];
-    [scrollView addPage:[UIView pageWithWidth:w height:h]];
-    [scrollView addPage:[UIView pageWithWidth:w height:h*1.5]];
-    [scrollView addPage:[UIView pageWithWidth:w height:h]];
+    NSArray* factors = @[@1, @1, @1, @1.5, @1, @5, @1];
+    for (NSNumber* factor in factors)
+        [scrollView addPage:[UIView pageWithWidth:w height:h * [factor floatValue]]];
     scrollView.pagingEnabled = YES;
     
     // UIScrollView
@@ -41,14 +39,10 @@
     [self.view addSubview:uiScrollView];
 
     float y = 0;
-    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
-    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
-    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
-    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
-    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
-    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
-    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
-    [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]]; y += h;
+    for (int i = 0; i < 8; i++) {
+        [uiScrollView addSubview:[UIView pageWithFrame:CGRectMake(0, y, w, h)]];
+        y += h;
+    }
     [uiScrollView setContentSize:CGSizeMake(w, y)];
     uiScrollView.pagingEnabled = YES;
 }
