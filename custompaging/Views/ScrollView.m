@@ -211,7 +211,7 @@
     
     if (ended && dt < 0.2) {
         float velocity = [gestureRecognizer velocityInView:self].y;
-        [self moveRollBy:velocity * 2./3 animated:YES touchBegan:began touchEnded:ended];
+        [self moveRollBy:velocity * 1./3 animated:YES touchBegan:began touchEnded:ended];
     }
     else
         [self moveRollBy:dy animated:NO touchBegan:began touchEnded:ended];
