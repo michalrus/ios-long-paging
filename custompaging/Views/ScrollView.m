@@ -89,10 +89,15 @@
     l.position = ((CALayer *)[l presentationLayer]).position;
     [l removeAllAnimations];
     
-    float animDuration = 1.5;
+#define SGN(v) ((v) < 0 ? -1 : 1)
+    if (animated && touchEnded) {
+        dy = SGN(dy) * MIN(ABS(dy), 777);
+        NSLog(@"dy = %f", dy);
+    }
     
     float x = l.position.x;
     float y = l.position.y + dy;
+    
     
     // linear "rubber band"
     if (y > 0 || y < -(self.roll.bounds.size.height - self.bounds.size.height)) {
@@ -101,6 +106,9 @@
     
     BOOL bounce = NO;
     float bounceBy = 20;
+    float bounceDuration = 0.25; // [s]
+    
+    BOOL changingPage = NO;
     
     if (!self.pagingEnabled) {
         y = MIN(y, 0);
@@ -165,13 +173,14 @@
                             newY = minY(targetPage);
                         }
                     }
+
+                    changingPage = YES;
                 }
             }
             
             if (newY != y) {
                 y = newY;
                 animated = YES;
-                animDuration = 0.25;
             }
         }
     }
@@ -190,18 +199,27 @@
         CGPathAddLineToPoint(path, NULL, x, y);
         
         anim.path = path;
-        anim.duration = (bounce ? 2 : 1) * animDuration;
         CAMediaTimingFunction* easeOut = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-        CAMediaTimingFunction* easeInOut = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-        if (bounce)
+        CAMediaTimingFunction* easeInOut = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        if (bounce) {
             anim.timingFunctions = @[easeOut, easeInOut];
-        else
+            anim.duration = 0.7;
+            anim.duration += bounceDuration;
+            anim.keyTimes = @[@0, @(1. - bounceDuration / anim.duration), @1];
+        }
+        else {
+            if (changingPage)
+                anim.duration = 1./3;
+            else
+                anim.duration = 1.0;
             anim.timingFunctions = @[easeOut];
-        
+        }
         anim.fillMode = kCAFillModeForwards;
         anim.removedOnCompletion = NO;
         
         [l addAnimation:anim forKey:@"position"];
+        
+        NSLog(@"duration = %f", anim.duration);
     }
 }
 
@@ -215,7 +233,7 @@
     
     if (ended && dt < 0.2) {
         float velocity = [gestureRecognizer velocityInView:self].y;
-        [self moveRollBy:velocity * 1./3 animated:YES touchBegan:began touchEnded:ended];
+        [self moveRollBy:velocity * 2./3 animated:YES touchBegan:began touchEnded:ended];
     }
     else
         [self moveRollBy:dy animated:NO touchBegan:began touchEnded:ended];
