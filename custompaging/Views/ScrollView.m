@@ -191,8 +191,12 @@
         
         anim.path = path;
         anim.duration = (bounce ? 2 : 1) * animDuration;
-        CAMediaTimingFunction* t = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-        anim.timingFunctions = @[t, t];
+        CAMediaTimingFunction* easeOut = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+        CAMediaTimingFunction* easeInOut = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+        if (bounce)
+            anim.timingFunctions = @[easeOut, easeInOut];
+        else
+            anim.timingFunctions = @[easeOut];
         
         anim.fillMode = kCAFillModeForwards;
         anim.removedOnCompletion = NO;
