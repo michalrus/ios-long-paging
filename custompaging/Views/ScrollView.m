@@ -98,15 +98,14 @@
     float x = l.position.x;
     float y = l.position.y + dy;
     
-    
     // linear "rubber band"
     if (y > 0 || y < -(self.roll.bounds.size.height - self.bounds.size.height)) {
         y = l.position.y + dy / 2.5;
     }
     
     BOOL bounce = NO;
-    float bounceBy = 20;
-    float bounceDuration = 0.25; // [s]
+    float bounceBy = ABS(dy) / 50;
+    float bounceDuration = 0.25 * bounceBy / 20; // [s]
     
     BOOL changingPage = NO;
     
